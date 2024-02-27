@@ -1,0 +1,74 @@
+version: "3.3"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.9.0
+    restart: always
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=S3cret
+      - POSTGRES_USER=test
+      - POSTGRES_DB=test
+
+
+  elastic:
+    build: ./code
+    volumes:
+      - ./code:/app
+    ports:
+      - "5001:5000"
+    depends_on:
+      - elasticsearch
+      - postgres
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=S3cret
+      - POSTGRES_USER=test
+      - POSTGRES_DB=test
+
+  # self_query:
+  #   build: ./self_query/code
+  #   volumes:
+  #     - ./self_query/code:/app
+  #   ports:
+  #     - "5002:5000"
+  #   depends_on:
+  #     - elasticsearch
+  #     # - chat
+
+
+  # chat:
+  #   build: ./chat/code
+  #   volumes:
+  #     - ./chat/code:/app
+  #   ports:
+  #     - "5000:5000"
+    # depends_on:
+    #   - elasticsearch
