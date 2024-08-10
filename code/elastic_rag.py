@@ -21,7 +21,7 @@ load_dotenv()
 url  = 'http://elasticsearch:9200'
 data_url = 'joined_datasets.json'
 elastic_index_name='byte-discuss-langchain-rag'
-openai_api_key='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'
+openai_api_key='YOUR_OPENAI_API_KEY' #place your openai api key here
 history = []
 OpenAI_key = os.environ.get("OPEN_AI_KEY")
 # prompt = 'Please just answer the question in Persian \n Start of Conversation History \n'
